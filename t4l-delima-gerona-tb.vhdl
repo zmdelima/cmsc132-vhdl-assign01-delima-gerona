@@ -12,7 +12,7 @@ end entity tb_farm_alarm;
 
 architecture security_alarm of tb_farm_alarm is
 
-	component farm_alarm is
+	component farm_alarm is --the entity being tested
 		port( alarm: out std_logic;  inBoggis, inBunce, inBean, outBoggis, outBunce, outBean: in std_logic);
 	end component farm_alarm;
 	
@@ -47,7 +47,8 @@ architecture security_alarm of tb_farm_alarm is
             expected_alarm := (inBoggis or inBunce or inBean) and (outBoggis or outBunce or outBean);
 			
             wait for DELAY;
-			
+            
+			--checking of errors if alarm is not equal to the expected_alarm value
 			assert(expected_alarm = alarm)
 				report "ERROR: Expected alarm " & std_logic'image(expected_alarm) & " /= actual valid " & 
 					std_logic'image(alarm) & " at time " & time'image(now);
@@ -59,6 +60,7 @@ architecture security_alarm of tb_farm_alarm is
             temp := temp + 1;
 		end loop;
 		
+		--counting of errors if there were any upon elaboration
 		wait for DELAY;
 		assert (error_count = 0)
 			report "ERROR: There were " &
